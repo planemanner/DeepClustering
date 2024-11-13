@@ -7,7 +7,7 @@
 # List
 - [VAE](https://arxiv.org/abs/1312.6114), ICLR 2014
 - [VaDE](https://arxiv.org/pdf/1611.05148), IJCAI 2017
-  - Currently, code is on the fixation.
+  - The code is planned to be updated in the near future. Current version is just a copy of VAE. 
 
 # To do list
 - [Multi-VAE](https://openaccess.thecvf.com/content/ICCV2021/papers/Xu_Multi-VAE_Learning_Disentangled_View-Common_and_View-Peculiar_Visual_Representations_for_Multi-View_ICCV_2021_paper.pdf), ICCV 2021

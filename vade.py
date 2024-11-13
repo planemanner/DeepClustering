@@ -80,7 +80,9 @@ class Decoder(nn.Module):
 
 
 class VaDE(nn.Module):
-    def __init__(self, in_channels, out_channels, enc_base_dim, dec_base_dim, img_h, img_w, latent_dim=20):
+    def __init__(self, in_channels, out_channels, enc_base_dim, 
+                 dec_base_dim, img_h, img_w, latent_dim=20):
+        
         super(VaDE, self).__init__()
         self.encoder = Encoder(in_channels, enc_base_dim, img_h, img_w, latent_dim=latent_dim)
         self.decoder = Decoder(latent_dim=latent_dim, out_channels=out_channels, base_dim=dec_base_dim, img_h=img_h, img_w=img_w)
@@ -93,6 +95,7 @@ class VaDE(nn.Module):
     def gmm_initialize(self, n_clusters):
         cat_pis = [1 / n_clusters for _ in range(n_clusters)]
         cov_mats = [torch.eye(n_clusters) for _ in range(n_clusters)]
+
         return
     
     def forward(self, x):
@@ -105,13 +108,12 @@ class VaDE(nn.Module):
     
     def elbo_loss(self, x, mu, log_var, recon_mu, recon_log_var, n_montecarlo=128):
         """
-        ELBO LOSS MUST BE FIXED ! 
-        Current code lines are vanilla VAE's ELBO loss
-        
+        p(x|z) = N(x; \mu_{x}, I) -> For practical purpose, assume the all diagonal covariance factors as 1.
         """
         kl_div = 0.5 * (torch.mat(mu[:, :, None].T, mu[:, :, None]) + torch.exp(log_var).sum(dim=1) - torch.sum(log_var, dim=1) - self.encoder.latent_dim)
-        recon_loss = 0.5 * (recon_log_var + ((recon_mu - x) ** 2) / (torch.exp(recon_log_var)))
-        recon_loss = recon_loss.view(len(x), -1).sum(dim=1)
+        
+        recon_loss = 0.5 * ((recon_mu - x) ** 2)
+        
         return - kl_div.mean() + recon_loss.mean()
 
     @torch.no_grad()
